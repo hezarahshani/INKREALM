@@ -15,9 +15,9 @@ if ($is_localhost) {
 } else {
     /* LIVE RENDER SETTINGS */
     // Replace these placeholder values with your actual Render External Database URL details!
-    $host     = "dpg-d896qamgvqtc73bmjikg-a"; 
-    $user     = "inkrealm_user";
-    $password = "postgresql://inkrealm_user:Z6qURzQfsxbUvW0uRQWOEQplmlPv9y5S@dpg-d896qamgvqtc73bmjikg-a.virginia-postgres.render.com/inkrealm";
+    $host     = "your-database-hostname.oregon-postgres.render.com"; 
+    $user     = "your_database_user";
+    $password = "your_actual_db_password";
     $database = "inkrealm";
 }
 
@@ -39,7 +39,7 @@ if (session_status() == PHP_SESSION_NONE) {
    SECURITY
 ======================================= */
 
-/* PREVENT SQL INJECTION (PDO handles this via prepared statements, but keeping function for code compatibility) */
+/* PREVENT SQL INJECTION */
 function clean($data) {
     return trim($data);
 }
@@ -174,7 +174,7 @@ function approve_contract($contract_id, $type, $send_to) {
     $stmt->execute(['type' => $type, 'send_to' => $send_to, 'contract_id' => $contract_id]);
 }
 
-bit-function reject_contract($contract_id, $reason) {
+function reject_contract($contract_id, $reason) {
     global $conn;
     $reason = clean($reason);
     $stmt = $conn->prepare("UPDATE contracts SET status = 'Rejected', reason = :reason WHERE id = :contract_id");
