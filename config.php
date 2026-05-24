@@ -15,9 +15,9 @@ if ($is_localhost) {
 } else {
     /* LIVE RENDER SETTINGS */
     // Replace these placeholder values with your actual Render External Database URL details!
-    $host     = " https://inkrealm-i9yk.onrender.com"; 
-    $user     = "thisisheza@hotmail.com";
-    $password = "#Nasrullah1738";
+    $host     = "dpg-d896qamgvqtc73bmjikg-a"; 
+    $user     = "inkrealm_user";
+    $password = "postgresql://inkrealm_user:Z6qURzQfsxbUvW0uRQWOEQplmlPv9y5S@dpg-d896qamgvqtc73bmjikg-a.virginia-postgres.render.com/inkrealm";
     $database = "inkrealm";
 }
 
