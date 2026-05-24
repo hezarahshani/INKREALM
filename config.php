@@ -15,9 +15,9 @@ if ($is_localhost) {
 } else {
     /* LIVE RENDER SETTINGS */
     // Replace these placeholder values with your actual Render External Database URL details!
-    $host     = "your-database-hostname.oregon-postgres.render.com"; 
-    $user     = "your_database_user";
-    $password = "your_actual_db_password";
+    $host     = "dpg-d896qamgvqtc73bmjikg-a"; 
+    $user     = "inkrealm_user";
+    $password = "Z6qURzQfsxbUvW0uRQWOEQplmlPv9y5S";
     $database = "inkrealm";
 }
 
