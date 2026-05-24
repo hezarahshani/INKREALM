@@ -17,7 +17,8 @@ if ($is_localhost) {
     $host     = "dpg-d896qamgvqtc73bmjikg-a"; 
     $user     = "inkrealm_user";
     $password = "Z6qURzQfsxbUvW0uRQWOEQplmlPv9y5S";
-    $database = "inkrealm";
+    $database = "inkrealm_user";
+    $driver   = "pgsql" ; 
 }
 
 /* CONNECT DATABASE VIA PDO */
