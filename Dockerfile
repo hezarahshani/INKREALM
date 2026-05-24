@@ -1,17 +1,10 @@
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    && docker-php-ext-install zip
+# Install BOTH MySQL and PostgreSQL drivers so your code can connect to anything!
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install mysqli pdo pdo_mysql pdo_pgsql \
+    && docker-php-ext-enable mysqli pdo pdo_mysql pdo_pgsql
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY . /var/www/html/
 
-WORKDIR /var/www/html
-COPY . .
-
-RUN composer install --no-interaction --optimize-autoloader
-
-EXPOSE 10000
-CMD ["php", "-S", "0.0.0.0:10000"]
+EXPOSE 80
