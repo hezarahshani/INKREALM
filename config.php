@@ -14,16 +14,16 @@ if ($is_localhost) {
     $database = "inkrealm";
 } else {
     /* LIVE RENDER SETTINGS */
-    $host     = "your-database-hostname.oregon-postgres.render.com"; 
-    $user     = "your_database_user";
-    $password = "your_actual_db_password";
+    $host     = "dpg-d896qamgvqtc73bmjikg-a"; 
+    $user     = "inkrealm_user";
+    $password = "Z6qURzQfsxbUvW0uRQWOEQplmlPv9y5S";
     $database = "inkrealm";
 }
 
 /* CONNECT DATABASE VIA PDO */
 try {
     // If using PostgreSQL on Render, change "mysql" to "pgsql" below
-    $conn = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $user, $password);
+    $conn = new PDO("pgsqlsql:host=$host;dbname=$database;charset=utf8mb4", $user, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Database Connection Failed: " . $e->getMessage());
