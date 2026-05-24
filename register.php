@@ -1,220 +1,178 @@
 <?php
 
-include 'config.php';
+require 'db.php';
 
 $message = "";
 
-if(isset($_POST['register'])){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username =
-    mysqli_real_escape_string(
-    $conn,
-    $_POST['username']
-    );
+    // Get form data
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
-    $email =
-    mysqli_real_escape_string(
-    $conn,
-    $_POST['email']
-    );
+    // Validation
+    if (empty($username) || empty($email) || empty($password)) {
 
-    $password =
-    password_hash(
-    $_POST['password'],
-    PASSWORD_DEFAULT
-    );
+        $message = "All fields are required.";
 
-    $check = mysqli_query(
+    } else {
 
-        $conn,
+        try {
 
-        "SELECT * FROM users
-        WHERE email='$email'"
-    );
+            // Check if email already exists
+            $check = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $check->execute([$email]);
 
-    if(mysqli_num_rows($check) > 0){
+            if ($check->rowCount() > 0) {
 
-        $message =
-        "Email already exists.";
+                $message = "Email already exists.";
 
-    }else{
+            } else {
 
-        mysqli_query(
+                // Hash password
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $conn,
+                // Insert user
+                $sql = "INSERT INTO users (username, email, password)
+                        VALUES (?, ?, ?)";
 
-            "INSERT INTO users
+                $stmt = $pdo->prepare($sql);
 
-            (username,email,password)
+                if ($stmt->execute([$username, $email, $hashedPassword])) {
 
-            VALUES
+                    $message = "Registration successful!";
 
-            ('$username','$email','$password')"
-        );
+                } else {
 
-        $message =
-        "Registration successful.";
+                    $message = "Registration failed.";
+
+                }
+            }
+
+        } catch (PDOException $e) {
+
+            $message = "Error: " . $e->getMessage();
+
+        }
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
 
-<title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <title>Register - InkRealm</title>
 
-body{
+    <style>
 
-    background:#050816;
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    color:white;
+        .register-box {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-    font-family:Poppins,sans-serif;
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    display:flex;
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-    justify-content:center;
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    align-items:center;
+        button:hover {
+            opacity: 0.9;
+        }
 
-    height:100vh;
-}
+        .message {
+            text-align: center;
+            margin-bottom: 15px;
+            color: red;
+        }
 
-.box{
+        .success {
+            color: green;
+        }
 
-    width:400px;
-
-    background:#111827;
-
-    padding:40px;
-
-    border-radius:20px;
-}
-
-input{
-
-    width:100%;
-
-    padding:15px;
-
-    margin-top:15px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:#1f2937;
-
-    color:white;
-}
-
-button{
-
-    width:100%;
-
-    padding:15px;
-
-    margin-top:20px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:#ff7b29;
-
-    color:white;
-
-    cursor:pointer;
-}
-
-.message{
-
-    background:#16a34a;
-
-    padding:15px;
-
-    border-radius:10px;
-
-    margin-bottom:20px;
-}
-
-a{
-
-    color:#ff7b29;
-
-    text-decoration:none;
-}
-
-</style>
+    </style>
 
 </head>
-
 <body>
 
-<div class="box">
+<div class="register-box">
 
-<h1>
-Register
-</h1>
+    <h2>Create Account</h2>
 
-<?php if($message != ""){ ?>
+    <?php if (!empty($message)) : ?>
 
-<div class="message">
+        <div class="message <?php echo ($message == 'Registration successful!') ? 'success' : ''; ?>">
 
-<?php echo $message; ?>
+            <?php echo $message; ?>
 
-</div>
+        </div>
 
-<?php } ?>
+    <?php endif; ?>
 
-<form method="POST">
+    <form method="POST">
 
-<input
-type="text"
-name="username"
-placeholder="Username"
-required>
+        <input 
+            type="text" 
+            name="username" 
+            placeholder="Enter username"
+            required
+        >
 
-<input
-type="email"
-name="email"
-placeholder="Email"
-required>
+        <input 
+            type="email" 
+            name="email" 
+            placeholder="Enter email"
+            required
+        >
 
-<input
-type="password"
-name="password"
-placeholder="Password"
-required>
+        <input 
+            type="password" 
+            name="password" 
+            placeholder="Enter password"
+            required
+        >
 
-<button
-type="submit"
-name="register">
+        <button type="submit">
+            Register
+        </button>
 
-Register
-
-</button>
-
-</form>
-
-<p style="margin-top:20px;">
-
-Already have account?
-
-<a href="login.php">
-
-Login
-
-</a>
-
-</p>
+    </form>
 
 </div>
 
 </body>
-
 </html>
